@@ -79,7 +79,14 @@ WSGI_APPLICATION = 'cashjournal.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd1v3as1c8l6s1b',
+        'USER': 'u37i8vm30816ak',
+        'PASSWORD': 'p9d7eda09dd8e172281b4cca006651be843e87ef3ca59a6405626e7f629139dad',
+        'HOST': 'c7lolh640htr57.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com',
+        'PORT': '5432',
+    }
 }
 
 
