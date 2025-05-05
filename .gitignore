@@ -46,4 +46,22 @@ Thumbs.db
 
 # Environment variables
 .env
-.env.local 
+.env.local
+
+# Heroku
+*.pyc
+staticfiles/
+.env.prod
+
+# Node
+node_modules/
+npm-debug.log
+
+# Coverage
+.coverage
+htmlcov/
+
+# Temporary files
+*.bak
+*.tmp
+*~ 
