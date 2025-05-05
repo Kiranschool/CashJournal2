@@ -16,6 +16,15 @@ from .forecast_utils import predict_future_spending
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 
+# Try to import openpyxl, but don't fail if it's not available
+try:
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from openpyxl.utils import get_column_letter
+    OPENPYXL_AVAILABLE = True
+except ImportError:
+    OPENPYXL_AVAILABLE = False
+
 class HomeView(LoginRequiredMixin, ListView):
     template_name = 'core/home.html'
     context_object_name = 'transactions'
@@ -453,10 +462,10 @@ def similar_transactions(request):
 
 class ExportDataView(LoginRequiredMixin, View):
     def get(self, request):
-        from openpyxl import Workbook
-        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-        from openpyxl.utils import get_column_letter
-        
+        if not OPENPYXL_AVAILABLE:
+            messages.error(request, "Excel export functionality is not available. Please contact support.")
+            return redirect('core:home')
+            
         # Create a new workbook and select the active sheet
         wb = Workbook()
         
