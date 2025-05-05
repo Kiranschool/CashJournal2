@@ -15,9 +15,6 @@ from .nlp_utils import get_category_suggestions, get_similar_transactions
 from .forecast_utils import predict_future_spending
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.utils import get_column_letter
 
 class HomeView(LoginRequiredMixin, ListView):
     template_name = 'core/home.html'
@@ -456,6 +453,10 @@ def similar_transactions(request):
 
 class ExportDataView(LoginRequiredMixin, View):
     def get(self, request):
+        from openpyxl import Workbook
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        from openpyxl.utils import get_column_letter
+        
         # Create a new workbook and select the active sheet
         wb = Workbook()
         
