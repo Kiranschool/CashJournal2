@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-oxt4epc9$qn89732wkm9ctl!v(#jw4tv&=ug=ou4jj#^@s*0qx')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True  # Temporarily set to True to see detailed errors
 
 ALLOWED_HOSTS = ['*']  # Update this with your Heroku domain once deployed
 
