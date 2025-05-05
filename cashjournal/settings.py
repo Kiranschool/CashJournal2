@@ -83,7 +83,7 @@ DATABASES = {
         default=os.environ.get('DATABASE_URL', 'postgres://postgres:password@localhost:5432/cashjournal_db'),
         conn_max_age=0,  # Disable persistent connections
         conn_health_checks=True,
-        ssl_require=not DEBUG  # Only require SSL in production
+        ssl_require=False  # Disable SSL requirement for local development
     )
 }
 

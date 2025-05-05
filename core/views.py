@@ -404,6 +404,29 @@ class SignupView(FormView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
+        
+        # Create default categories for the new user
+        default_categories = [
+            {'name': 'Food & Dining', 'color': '#FF5733'},
+            {'name': 'Transportation', 'color': '#33FF57'},
+            {'name': 'Shopping', 'color': '#3357FF'},
+            {'name': 'Entertainment', 'color': '#FF33F5'},
+            {'name': 'Bills & Utilities', 'color': '#33FFF5'},
+            {'name': 'Health & Fitness', 'color': '#F5FF33'},
+            {'name': 'Travel', 'color': '#FF8333'},
+            {'name': 'Education', 'color': '#338FFF'},
+            {'name': 'Personal Care', 'color': '#FF33A1'},
+            {'name': 'Other', 'color': '#808080'}
+        ]
+
+        for category_data in default_categories:
+            Category.objects.create(
+                name=category_data['name'],
+                color=category_data['color'],
+                user=user,
+                is_default=True
+            )
+        
         messages.success(self.request, 'Account created successfully!')
         return super().form_valid(form)
 
