@@ -1,0 +1,139 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+    {% if object %}Edit{% else %}Add{% endif %} Wishlist Item - Cash Journal
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{% if object %}Edit{% else %}Add{% endif %} Wishlist Item</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <!-- Name -->
+                                <div class="mb-3">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">Item Name</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Estimated Cost -->
+                                <div class="mb-3">
+                                    <label for="{{ form.estimated_cost.id_for_label }}" class="form-label">Estimated Cost</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">{{ user_currency }}</span>
+                                        {{ form.estimated_cost }}
+                                    </div>
+                                    {% if form.estimated_cost.errors %}
+                                        <div class="text-danger">{{ form.estimated_cost.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Priority -->
+                                <div class="mb-3">
+                                    <label for="{{ form.priority.id_for_label }}" class="form-label">Priority Level</label>
+                                    {{ form.priority }}
+                                    <div class="form-text">Rate from 1 (lowest) to 5 (highest)</div>
+                                    {% if form.priority.errors %}
+                                        <div class="text-danger">{{ form.priority.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description }}
+                                    <div class="form-text">Add details about the item and why you want it</div>
+                                    {% if form.description.errors %}
+                                        <div class="text-danger">{{ form.description.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                {% if object %}Update{% else %}Add{% endif %} Item
+                            </button>
+                            <a href="{% url 'core:wishlist' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-label {
+    font-weight: 500;
+    color: #9b4dca;
+}
+
+.form-control {
+    border: 1px solid #e1bee7;
+    border-radius: 4px;
+    padding: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: #9b4dca;
+    box-shadow: 0 0 0 0.2rem rgba(155, 77, 202, 0.25);
+}
+
+.form-control::placeholder {
+    color: #bdbdbd;
+    opacity: 1;
+}
+
+.input-group-text {
+    background-color: #f3e5f5;
+    border-color: #e1bee7;
+    color: #9b4dca;
+}
+
+.form-text {
+    color: #ba68c8;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #2c003e 0%, #6a0dad 100%);
+    border: none;
+    padding: 0.5rem 1.5rem;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #6a0dad 0%, #9b4dca 100%);
+}
+
+.btn-secondary {
+    background: #f3e5f5;
+    border: 1px solid #e1bee7;
+    color: #2c003e;
+    padding: 0.5rem 1.5rem;
+}
+
+.btn-secondary:hover {
+    background: #e1bee7;
+    border-color: #ce93d8;
+    color: #2c003e;
+}
+</style>
+{% endblock %} 

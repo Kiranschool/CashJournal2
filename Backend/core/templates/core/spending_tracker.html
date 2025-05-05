@@ -1,0 +1,217 @@
+{% extends "core/base.html" %}
+
+{% block title %}Spending Tracker - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Spending Tracker</h2>
+            <p class="text-muted">Track and analyze your spending patterns.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Category Breakdown -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Spending by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Reflections -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Purchase Satisfaction</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reflectionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trend -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Monthly Spending Trend</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spending Forecast -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Spending Forecast</h5>
+                </div>
+                <div class="card-body">
+                    {% if spending_forecast %}
+                        <div class="row">
+                            {% for prediction in spending_forecast %}
+                            <div class="col-md-4">
+                                <div class="card" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title" style="color: #4a148c;">{{ prediction.month }}</h6>
+                                        <p class="card-text h4" style="color: #6a0dad;">
+                                            {{ prediction.amount|floatformat:2 }} {{ currency }}
+                                        </p>
+                                        <small class="text-muted" style="color: #9b4dca;">Predicted Spending</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">Not enough data to generate forecast. Add more transactions to see predictions.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover purple-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Purchase Name</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Reflection</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td>{{ transaction.date|date:"M d, Y" }}</td>
+                                    <td>{{ transaction.purchase_name }}</td>
+                                    <td>{{ transaction.category.name }}</td>
+                                    <td class="{% if transaction.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ transaction.amount|floatformat:2 }} {{ currency }}
+                                    </td>
+                                    <td>
+                                        {% if transaction.purchase_reflection %}
+                                            <span class="badge {% if transaction.purchase_reflection == 'happy' %}bg-success{% elif transaction.purchase_reflection == 'regret' %}bg-danger{% else %}bg-warning{% endif %}">
+                                                {{ transaction.get_purchase_reflection_display }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = {
+        labels: [{% for category in category_spending %}'{{ category.category__name }}',{% endfor %}],
+        datasets: [{
+            data: [{% for category in category_spending %}{{ category.total }},{% endfor %}],
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF',
+                '#FF9F40'
+            ]
+        }]
+    };
+    new Chart(categoryCtx, {
+        type: 'pie',
+        data: categoryData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+
+    // Reflection Chart
+    const reflectionCtx = document.getElementById('reflectionChart').getContext('2d');
+    const reflectionData = {
+        labels: {{ reflection_data.labels|safe }},
+        datasets: [{
+            data: {{ reflection_data.data|safe }},
+            backgroundColor: [
+                '{{ reflection_data.colors.happy }}',
+                '{{ reflection_data.colors.regret }}',
+                '{{ reflection_data.colors.undecided }}'
+            ]
+        }]
+    };
+    new Chart(reflectionCtx, {
+        type: 'pie',
+        data: reflectionData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                title: {
+                    display: true,
+                    text: 'Current Month Purchase Satisfaction'
+                }
+            }
+        }
+    });
+
+    // Trend Chart
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    const trendData = {
+        labels: [{% for month in monthly_trend %}'{{ month.date__year }}-{{ month.date__month }}',{% endfor %}],
+        datasets: [{
+            label: 'Monthly Spending',
+            data: [{% for month in monthly_trend %}{{ month.total }},{% endfor %}],
+            borderColor: '#36A2EB',
+            tension: 0.1
+        }]
+    };
+    new Chart(trendCtx, {
+        type: 'line',
+        data: trendData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

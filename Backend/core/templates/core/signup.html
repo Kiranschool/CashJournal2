@@ -1,0 +1,203 @@
+{% extends "core/auth_base.html" %}
+
+{% block title %}Sign Up - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-body p-5">
+                <h1 class="text-center mb-4" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Join CashJournal today</h1>
+                <form method="post" aria-label="Sign up form" class="signup-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <div class="label-container">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {% if field.name == 'username' %}
+                                        <i class="bi bi-person me-2" aria-hidden="true"></i>
+                                    {% elif field.name == 'email' %}
+                                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                                    {% elif 'password' in field.name %}
+                                        <i class="bi bi-lock me-2" aria-hidden="true"></i>
+                                        <button type="button" class="btn btn-link p-0 ms-2" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#passwordRequirementsModal"
+                                                aria-label="View password requirements">
+                                            <i class="bi bi-question-circle" aria-hidden="true"></i>
+                                        </button>
+                                    {% endif %}
+                                    {{ field.label }}
+                                </label>
+                            </div>
+                            <div class="input-container">
+                                {{ field.errors }}
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Sign Up
+                        </button>
+                    </div>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="mb-0">Already have an account? 
+                        <a href="{% url 'login' %}" class="text-decoration-underline">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Requirements Modal -->
+<div class="modal fade" id="passwordRequirementsModal" tabindex="-1" aria-labelledby="passwordRequirementsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="passwordRequirementsModalLabel">Password Requirements</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                        Your password can't be too similar to your other personal information
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                        Your password must contain at least 8 characters
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                        Your password can't be a commonly used password
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
+                        Your password can't be entirely numeric
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .signup-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .label-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .form-control {
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+        color: #212529;
+        border: 1px solid #ced4da;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #ffffff;
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    }
+
+    .form-label {
+        color: #ffffff;
+        font-weight: 500;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label i {
+        color: #ffffff;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+        font-size: 0.875rem;
+        color: #dc3545;
+    }
+
+    .btn-link {
+        color: #ffffff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-link:hover {
+        color: #e6e6e6;
+        text-decoration: underline;
+    }
+
+    .btn-primary {
+        min-width: 200px;
+        padding: 0.8rem 1.5rem;
+    }
+
+    .list-group-item {
+        color: #212529;
+        background-color: #ffffff;
+        border-color: rgba(0, 0, 0, 0.125);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        color: #212529;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #dee2e6;
+    }
+
+    .text-decoration-underline {
+        text-decoration: underline !important;
+    }
+
+    .text-decoration-underline:hover {
+        text-decoration: none !important;
+    }
+</style>
+{% endblock %} 

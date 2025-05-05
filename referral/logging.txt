@@ -1,0 +1,22 @@
+[2024-05-05] Bug Fix: UserPreferences Creation
+1. Fixed RelatedObjectDoesNotExist error when accessing user preferences
+2. Added automatic UserPreferences creation in SignupView
+3. Implemented Django signals to ensure UserPreferences creation:
+   - Added post_save signal for User model
+   - Created create_user_preferences signal handler
+   - Added save_user_preferences signal handler
+4. Benefits:
+   - Automatic UserPreferences creation for all new users
+   - Works with all user creation methods (signup, admin, etc.)
+   - Prevents RelatedObjectDoesNotExist errors
+   - Maintains data consistency
+
+[2024-05-05] Bug Fix: UserPreferences Duplicate Creation
+1. Fixed IntegrityError when creating UserPreferences
+2. Removed duplicate UserPreferences creation from SignupView
+3. Let signal handler be the single source of UserPreferences creation
+4. Benefits:
+   - Prevents race conditions
+   - Eliminates duplicate key violations
+   - Maintains data integrity
+   - Simplifies user creation process 

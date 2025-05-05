@@ -1,0 +1,232 @@
+{% extends "core/base.html" %}
+
+{% block title %}Account Settings - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Account Settings</h2>
+        <p class="text-muted">Manage your preferences and personal information.</p>
+    </div>
+</div>
+
+{% if messages %}
+<div class="row mb-4">
+    <div class="col-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<style>
+    /* Dropdown Styling */
+    select.form-select {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border: 1px solid #ce93d8;
+        color: #4a148c;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    select.form-select:hover {
+        background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+        border-color: #ba68c8;
+    }
+
+    select.form-select:focus {
+        background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+        border-color: #9b4dca;
+        box-shadow: 0 0 0 0.25rem rgba(155, 77, 202, 0.25);
+        color: #4a148c;
+    }
+
+    select.form-select option {
+        background: white;
+        color: #4a148c;
+        padding: 10px;
+    }
+
+    select.form-select option:hover {
+        background: #f3e5f5;
+    }
+
+    /* Form Label Styling */
+    .form-label {
+        color: #ce93d8;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Form Check Label Styling */
+    .form-check-label {
+        color: #ce93d8;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+        border: none;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #ba68c8 0%, #ab47bc 100%);
+    }
+
+    .btn-outline-primary {
+        border: 1px solid #ba68c8;
+        color: #ce93d8;
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+        border-color: #ba68c8;
+        color: white;
+    }
+
+    .btn-outline-danger {
+        border: 1px solid #f48fb1;
+        color: #c2185b;
+    }
+
+    .btn-outline-danger:hover {
+        background: linear-gradient(90deg, #f48fb1 0%, #f06292 100%);
+        border-color: #f06292;
+        color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Preferences</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_default_currency" class="form-label">Default Currency</label>
+                        <select name="default_currency" id="id_default_currency" class="form-select">
+                            <option value="USD" {% if form.default_currency.value == 'USD' %}selected{% endif %}>USD ($)</option>
+                            <option value="EUR" {% if form.default_currency.value == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                            <option value="GBP" {% if form.default_currency.value == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="notification_enabled" id="id_notification_enabled" class="form-check-input" {% if form.notification_enabled.value %}checked{% endif %}>
+                            <label class="form-check-label" for="id_notification_enabled">Enable Notifications</label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Account Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <p class="form-control-static">{{ user.username }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <p class="form-control-static">{{ user.email }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Member Since</label>
+                    <p class="form-control-static">{{ user.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Data Management</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'core:export_data' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-download"></i> Export Data
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <i class="bi bi-trash"></i> Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); border: none;">
+            <div class="modal-header" style="background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%); color: white; border-bottom: none;">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #4a148c;">Are you sure you want to delete your account? This action cannot be undone.</p>
+                <div class="alert alert-danger" style="background: rgba(255, 255, 255, 0.9); border: 1px solid #f48fb1;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong style="color: #dc3545;">Warning:</strong> <span style="color: #dc3545;">This will permanently delete:</span>
+                    <ul class="mb-0 mt-2" style="color: #000000;">
+                        <li>All your transactions</li>
+                        <li>Wishlist items</li>
+                        <li>Account preferences</li>
+                        <li>Personal data</li>
+                    </ul>
+                </div>
+                <form method="post" action="{% url 'core:delete_account' %}" id="deleteAccountForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="confirmDelete" class="form-label" style="color: #4a148c;">Type "DELETE" to confirm</label>
+                        <input type="text" class="form-control" id="confirmDelete" required 
+                               style="background: rgba(255, 255, 255, 0.9); border: 1px solid #ce93d8; color: #4a148c;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="border-top: none;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 
+                        style="background: linear-gradient(90deg, #e1bee7 0%, #ce93d8 100%); border: none; color: #4a148c;">
+                    Cancel
+                </button>
+                <button type="submit" form="deleteAccountForm" class="btn btn-danger" 
+                        style="background: linear-gradient(90deg, #f48fb1 0%, #f06292 100%); border: none;"
+                        id="confirmDeleteBtn" disabled>
+                    Yes, Delete My Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmInput = document.getElementById('confirmDelete');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    
+    confirmInput.addEventListener('input', function() {
+        confirmButton.disabled = this.value !== 'DELETE';
+    });
+});
+</script>
+
+{% endblock %} 
