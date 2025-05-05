@@ -45,6 +45,9 @@ class HomeView(LoginRequiredMixin, ListView):
         first_day = today.replace(day=1)
         last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
         
+        # Add month to context
+        context['month'] = today.strftime('%B %Y')
+        
         monthly_expenses = Transaction.objects.filter(
             user=self.request.user,
             date__range=[first_day, last_day],
@@ -67,7 +70,6 @@ class HomeView(LoginRequiredMixin, ListView):
             'balance': monthly_income - monthly_expenses,
             'currency': user_currency
         }
-        context['month'] = today.strftime('%B %Y')
 
         # Get category breakdown
         category_spending = Transaction.objects.filter(
