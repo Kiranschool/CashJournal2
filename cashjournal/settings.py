@@ -79,11 +79,7 @@ WSGI_APPLICATION = 'cashjournal.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', 'postgres://postgres:password@localhost:5432/cashjournal_db'),
-        conn_max_age=0,  # Disable persistent connections
-        ssl_require=False  # Disable SSL requirement for local development
-    )
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
 
