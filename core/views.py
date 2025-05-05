@@ -35,7 +35,10 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_currency = self.request.user.userpreferences.default_currency
+        
+        # Ensure user preferences exist
+        user_preferences, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        user_currency = user_preferences.default_currency
         
         # Get monthly summary
         today = timezone.now()
