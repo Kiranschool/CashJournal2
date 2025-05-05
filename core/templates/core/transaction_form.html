@@ -1,0 +1,470 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Transaction - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Transaction</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <!-- Amount -->
+                                <div class="mb-3">
+                                    <label for="{{ form.amount.id_for_label }}" class="form-label">Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">{{ user_currency }}</span>
+                                        {{ form.amount }}
+                                    </div>
+                                    {% if form.amount.errors %}
+                                        <div class="text-danger">{{ form.amount.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Purchase Name -->
+                                <div class="mb-3">
+                                    <label for="{{ form.purchase_name.id_for_label }}" class="form-label">Purchase Name</label>
+                                    {{ form.purchase_name }}
+                                    {% if form.purchase_name.errors %}
+                                        <div class="text-danger">{{ form.purchase_name.errors }}</div>
+                                    {% endif %}
+                                    <div id="category-suggestions" class="mt-2"></div>
+                                    <div id="similar-transactions" class="mt-2"></div>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="mb-3">
+                                    <label for="{{ form.date.id_for_label }}" class="form-label">Date</label>
+                                    {{ form.date }}
+                                    {% if form.date.errors %}
+                                        <div class="text-danger">{{ form.date.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Category -->
+                                <div class="mb-3">
+                                    <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div class="text-danger">{{ form.category.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Transaction Type -->
+                                <div class="mb-3">
+                                    <label for="{{ form.transaction_type.id_for_label }}" class="form-label">Type</label>
+                                    {{ form.transaction_type }}
+                                    {% if form.transaction_type.errors %}
+                                        <div class="text-danger">{{ form.transaction_type.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <!-- Purchase Reflection -->
+                                <div class="mb-3">
+                                    <label for="{{ form.purchase_reflection.id_for_label }}" class="form-label">Do you regret this purchase?</label>
+                                    {{ form.purchase_reflection }}
+                                    <div class="form-text">Share your feelings about this purchase.</div>
+                                    {% if form.purchase_reflection.errors %}
+                                        <div class="text-danger">{{ form.purchase_reflection.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Additional Reflection -->
+                                <div class="mb-3">
+                                    <label for="{{ form.reflection.id_for_label }}" class="form-label">Additional Reflection</label>
+                                    {{ form.reflection }}
+                                    <div class="form-text">Share your detailed thoughts about this purchase.</div>
+                                    {% if form.reflection.errors %}
+                                        <div class="text-danger">{{ form.reflection.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Recurring Transaction -->
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        {{ form.is_recurring }}
+                                        <label class="form-check-label" for="{{ form.is_recurring.id_for_label }}">
+                                            Make this a recurring transaction
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Recurring Options (initially hidden) -->
+                                <div id="recurringOptions" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="{{ form.recurring_frequency.id_for_label }}" class="form-label">Frequency</label>
+                                        {{ form.recurring_frequency }}
+                                        {% if form.recurring_frequency.errors %}
+                                            <div class="text-danger">{{ form.recurring_frequency.errors }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="{{ form.recurring_end_date.id_for_label }}" class="form-label">End Date</label>
+                                        {{ form.recurring_end_date }}
+                                        <div class="form-text">When should this recurring transaction stop?</div>
+                                        {% if form.recurring_end_date.errors %}
+                                            <div class="text-danger">{{ form.recurring_end_date.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Save Transaction</button>
+                            <a href="{% url 'core:finance_calendar' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global variables
+let rejectedCategories = new Set();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const purchaseNameInput = document.getElementById('{{ form.purchase_name.id_for_label }}');
+    const categorySelect = document.getElementById('{{ form.category.id_for_label }}');
+    const suggestionsDiv = document.getElementById('category-suggestions');
+    const similarTransactionsDiv = document.getElementById('similar-transactions');
+    let debounceTimer;
+    let lastSelectedCategory = categorySelect.value;
+
+    // Function to handle category suggestions
+    function updateCategorySuggestions(purchaseName) {
+        if (purchaseName.length > 2) {
+            // Get category suggestions
+            fetch(`/api/category-suggestions/?description=${encodeURIComponent(purchaseName)}`, {
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.suggestions && data.suggestions.length > 0) {
+                        let html = '<div class="alert alert-info">';
+                        html += '<strong>Suggested Categories:</strong><br>';
+                        data.suggestions.forEach(([category, confidence]) => {
+                            if (!rejectedCategories.has(category)) {
+                                const percentage = Math.round(confidence * 100);
+                                html += `
+                                    <div class="mt-2 suggestion-item" data-category="${category}">
+                                        <div class="d-flex align-items-center">
+                                            <button type="button" class="btn btn-sm btn-outline-primary me-2 accept-btn" 
+                                                    data-category="${category}">
+                                                <i class="fas fa-check"></i> Accept
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger me-2 reject-btn"
+                                                    data-category="${category}">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                            <span class="ms-2">${category} (${percentage}%)</span>
+                                        </div>
+                                    </div>`;
+                            }
+                        });
+                        html += '</div>';
+                        suggestionsDiv.innerHTML = html;
+
+                        // Add event listeners to the new buttons
+                        document.querySelectorAll('.accept-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const category = this.getAttribute('data-category');
+                                selectCategory(category);
+                            });
+                        });
+
+                        document.querySelectorAll('.reject-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const category = this.getAttribute('data-category');
+                                rejectCategory(category);
+                            });
+                        });
+                    } else {
+                        suggestionsDiv.innerHTML = '';
+                    }
+                });
+
+            // Get similar transactions
+            fetch(`/api/similar-transactions/?description=${encodeURIComponent(purchaseName)}`, {
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.similar_transactions && data.similar_transactions.length > 0) {
+                        let html = '<div class="alert alert-secondary">';
+                        html += '<strong>Similar Transactions:</strong><br>';
+                        data.similar_transactions.forEach(([desc, category, similarity]) => {
+                            const percentage = Math.round(similarity * 100);
+                            html += `<div class="mt-1">
+                                <small>${desc} (${category}) - ${percentage}% similar</small>
+                            </div>`;
+                        });
+                        html += '</div>';
+                        similarTransactionsDiv.innerHTML = html;
+                    } else {
+                        similarTransactionsDiv.innerHTML = '';
+                    }
+                });
+        } else {
+            suggestionsDiv.innerHTML = '';
+            similarTransactionsDiv.innerHTML = '';
+        }
+    }
+
+    // Add input event listener with debounce
+    purchaseNameInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const purchaseName = this.value.trim();
+        debounceTimer = setTimeout(() => updateCategorySuggestions(purchaseName), 500);
+    });
+
+    // Track manual category changes
+    categorySelect.addEventListener('change', function() {
+        if (this.value !== lastSelectedCategory) {
+            lastSelectedCategory = this.value;
+            suggestionsDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-brain"></i> Learning from your selection...
+                </div>`;
+        }
+    });
+});
+
+function selectCategory(category) {
+    const categorySelect = document.getElementById('{{ form.category.id_for_label }}');
+    console.log('Trying to select category:', category);
+    
+    // Get all options and their text content
+    const options = Array.from(categorySelect.options);
+    console.log('Available options:', options.map(opt => ({text: opt.text, value: opt.value})));
+    
+    // First try exact match
+    let match = options.find(opt => opt.text === category);
+    console.log('Exact match result:', match ? match.text : 'No exact match');
+    
+    // If no exact match, try case-insensitive match
+    if (!match) {
+        match = options.find(opt => opt.text.toLowerCase() === category.toLowerCase());
+        console.log('Case-insensitive match result:', match ? match.text : 'No case-insensitive match');
+    }
+    
+    // If still no match, try without special characters
+    if (!match) {
+        const normalizedCategory = category.replace(/[&]/g, 'and');
+        match = options.find(opt => 
+            opt.text.toLowerCase().replace(/[&]/g, 'and') === normalizedCategory.toLowerCase()
+        );
+        console.log('Normalized match result:', match ? match.text : 'No normalized match');
+    }
+    
+    // If still no match, try partial match
+    if (!match) {
+        match = options.find(opt => 
+            opt.text.toLowerCase().includes(category.toLowerCase()) || 
+            category.toLowerCase().includes(opt.text.toLowerCase())
+        );
+        console.log('Partial match result:', match ? match.text : 'No partial match');
+    }
+    
+    if (match) {
+        console.log('Found matching option:', match.text);
+        categorySelect.value = match.value;
+        // Trigger the change event
+        categorySelect.dispatchEvent(new Event('change'));
+        const suggestionsDiv = document.getElementById('category-suggestions');
+        suggestionsDiv.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check"></i> Category "${match.text}" selected
+            </div>`;
+    } else {
+        // If we get here, no match was found
+        console.log('No matching category found');
+        const suggestionsDiv = document.getElementById('category-suggestions');
+        suggestionsDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> Could not find category "${category}" in the list
+            </div>`;
+    }
+}
+
+function rejectCategory(category) {
+    rejectedCategories.add(category);
+    const suggestionItem = document.querySelector(`.suggestion-item[data-category="${category}"]`);
+    if (suggestionItem) {
+        suggestionItem.remove();
+    }
+    const suggestionsDiv = document.getElementById('category-suggestions');
+    if (suggestionsDiv.querySelectorAll('.suggestion-item').length === 0) {
+        suggestionsDiv.innerHTML = '';
+    }
+}
+
+// Show/hide recurring options based on checkbox
+document.getElementById('{{ form.is_recurring.id_for_label }}').addEventListener('change', function() {
+    document.getElementById('recurringOptions').style.display = this.checked ? 'block' : 'none';
+});
+
+// Initialize visibility on page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('recurringOptions').style.display = 
+        document.getElementById('{{ form.is_recurring.id_for_label }}').checked ? 'block' : 'none';
+});
+</script>
+
+<style>
+    /* Dropdown Styling */
+    select.form-select {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border: 1px solid #ce93d8;
+        color: #4a148c;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    select.form-select:hover {
+        background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+        border-color: #ba68c8;
+    }
+
+    select.form-select:focus {
+        background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+        border-color: #9b4dca;
+        box-shadow: 0 0 0 0.25rem rgba(155, 77, 202, 0.25);
+        color: #4a148c;
+    }
+
+    select.form-select option {
+        background: white;
+        color: #4a148c;
+        padding: 10px;
+    }
+
+    select.form-select option:hover {
+        background: #f3e5f5;
+    }
+
+    /* Form Label Styling */
+    .form-label {
+        color: #ba68c8;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Form Text Styling */
+    .form-text {
+        color: #ce93d8;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Input Group Text Styling */
+    .input-group-text {
+        background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+        border: 1px solid #ba68c8;
+        color: white;
+    }
+
+    /* Form Control Styling */
+    .form-control {
+        border: 1px solid #ce93d8;
+        color: #4a148c;
+    }
+
+    .form-control:focus {
+        border-color: #9b4dca;
+        box-shadow: 0 0 0 0.25rem rgba(155, 77, 202, 0.25);
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+        border: none;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #ba68c8 0%, #ab47bc 100%);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(90deg, #e1bee7 0%, #ce93d8 100%);
+        border: none;
+        color: #4a148c;
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+        color: #4a148c;
+    }
+
+    .suggestion-item {
+        padding: 8px 12px;
+        margin: 4px 0;
+        border-radius: 4px;
+        background-color: #f3e5f5;
+        border: 1px solid #e1bee7;
+        transition: background-color 0.2s;
+    }
+
+    .suggestion-item:hover {
+        background-color: #e1bee7;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    #category-suggestions {
+        margin-top: 8px;
+    }
+
+    #category-suggestions .alert {
+        background-color: #f3e5f5;
+        border-color: #e1bee7;
+        color: #6a0dad;
+    }
+
+    #category-suggestions .alert-success {
+        background-color: #e8f5e9;
+        border-color: #c8e6c9;
+        color: #2e7d32;
+    }
+
+    #category-suggestions .alert-danger {
+        background-color: #ffebee;
+        border-color: #ffcdd2;
+        color: #c62828;
+    }
+
+    /* Card Header Styling */
+    .card-header h4 {
+        color: white;
+    }
+</style>
+{% endblock %} 

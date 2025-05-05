@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cash Journal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c003e;
+            --secondary-color: #6a0dad;
+            --accent-color: #9b4dca;
+            --text-color: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #000000 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .navbar-brand {
+            color: var(--text-color) !important;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-color) !important;
+        }
+
+        .main-content {
+            padding: 2rem;
+            min-height: calc(100vh - 56px);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            color: var(--text-color);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--accent-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-color);
+        }
+
+        .footer {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-color);
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+
+        /* Form elements styling */
+        input, textarea, select {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: var(--text-color) !important;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--text-color) !important;
+        }
+
+        /* Table styling */
+        table {
+            color: var(--text-color);
+        }
+
+        th, td {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .purple-table {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%) !important;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .purple-table thead th {
+            background: #4a148c !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px !important;
+        }
+
+        .purple-table tbody td {
+            border-color: rgba(74, 20, 140, 0.1) !important;
+            padding: 12px !important;
+            color: #2c003e !important;
+        }
+
+        .purple-table tbody tr:hover {
+            background: rgba(225, 190, 231, 0.5) !important;
+        }
+
+        /* Alert styling */
+        .alert {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+        }
+
+        /* Calendar Styles */
+        .calendar {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 150px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .calendar-day-header {
+            background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+            border: 2px solid #ba68c8;
+        }
+
+        .calendar-day.other-month {
+            background: rgba(255, 255, 255, 0.7);
+            opacity: 0.7;
+        }
+
+        .calendar-day .transaction-card {
+            background: white;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day .transaction-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .calendar-day .transaction-card .amount {
+            font-weight: bold;
+            color: #6a1b9a;
+        }
+
+        .calendar-day .transaction-card .category {
+            font-size: 0.8em;
+            color: #9c27b0;
+        }
+
+        .calendar-day .transaction-card .description {
+            font-size: 0.9em;
+            color: #4a148c;
+        }
+
+        .calendar-day .add-transaction-btn {
+            background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .calendar-day:hover .add-transaction-btn {
+            opacity: 1;
+        }
+
+        .calendar-day .add-transaction-btn:hover {
+            background: linear-gradient(90deg, #ba68c8 0%, #ab47bc 100%);
+            transform: translateY(-1px);
+        }
+
+        .calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-navigation button {
+            background: linear-gradient(90deg, #e1bee7 0%, #ce93d8 100%);
+            color: #4a148c;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .calendar-navigation button:hover {
+            background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+            transform: translateY(-1px);
+            color: #4a148c;
+        }
+
+        .calendar-navigation .today-btn {
+            background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%);
+            margin: 0 10px;
+            color: #4a148c;
+        }
+
+        .calendar-navigation .today-btn:hover {
+            background: linear-gradient(90deg, #ba68c8 0%, #ab47bc 100%);
+            color: #4a148c;
+        }
+
+        .calendar-title {
+            font-size: 1.5em;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-journal-text"></i> Cash Journal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:finance_calendar' %}">
+                            <i class="bi bi-calendar"></i> Calendar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:wishlist' %}">
+                            <i class="bi bi-heart"></i> Wishlist
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:spending_tracker' %}">
+                            <i class="bi bi-graph-up"></i> Spending Tracker
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:account_settings' %}">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); border: none;">
+                <div class="modal-header" style="background: linear-gradient(90deg, #ce93d8 0%, #ba68c8 100%); color: white; border-bottom: none;">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #4a148c;">Are you sure you want to logout?</p>
+                </div>
+                <div class="modal-footer" style="border-top: none;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 
+                            style="background: linear-gradient(90deg, #e1bee7 0%, #ce93d8 100%); border: none; color: #4a148c;">
+                        Cancel
+                    </button>
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" 
+                                style="background: linear-gradient(90deg, #f48fb1 0%, #f06292 100%); border: none;">
+                            Yes, logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Cash Journal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

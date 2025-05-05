@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block title %}Delete Wishlist Item - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h2>Delete Wishlist Item</h2>
+                <p>Are you sure you want to delete "{{ object.name }}"?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    <a href="{% url 'core:wishlist' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

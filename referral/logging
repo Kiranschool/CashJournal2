@@ -1,0 +1,366 @@
+Here is where you put the details and updates on the project along with any bugs and how you fixed them.
+
+[2024-03-30] Project Setup
+1. Created virtual environment in Backend directory
+2. Installed required packages (Django, PostgreSQL, Pandas, Scikit-learn)
+3. Created new Django project named 'cashjournal'
+4. Created core app for main functionality
+5. Configured PostgreSQL database settings
+6. Created requirements.txt with project dependencies
+
+[2024-03-30] Core Models and Views Implementation
+1. Created core models:
+   - Category (for transaction categorization)
+   - Transaction (for income/expense tracking)
+   - JournalEntry (for daily reflections)
+   - WishlistItem (for tracking desired purchases)
+   - UserPreferences (for user settings)
+2. Implemented views for all main pages:
+   - HomeView (dashboard with spending overview)
+   - FinanceCalendarView (calendar interface for transactions)
+   - TransactionCreateView (form for adding transactions)
+   - WishlistView (list of desired items)
+   - WishlistItemCreateView (form for adding wishlist items)
+   - SpendingTrackerView (spending analytics)
+   - AccountSettingsView (user preferences)
+3. Created forms for data input:
+   - TransactionForm
+   - JournalEntryForm
+   - WishlistItemForm
+4. Set up URL routing for all views
+
+[2024-03-30] Template Implementation
+1. Created base template with:
+   - Responsive navigation
+   - Modern design with Bootstrap 5
+   - Custom styling for cards and components
+2. Created templates for all pages:
+   - Login page with clean authentication form
+   - Home page with dashboard layout and quick actions
+   - Finance Calendar with monthly view and transaction list
+   - Wishlist page with card-based item display
+   - Spending Tracker with charts and analytics
+   - Account Settings with preferences and data management
+3. Added interactive features:
+   - Calendar navigation
+   - Chart.js integration for data visualization
+   - Responsive tables and cards
+   - Form validation and error handling
+
+[2024-03-30] User Authentication Implementation
+1. Added signup functionality:
+   - Created UserSignupForm extending Django's UserCreationForm
+   - Added email field to signup form
+   - Implemented SignupView with automatic login after registration
+   - Created modern signup template with Bootstrap styling
+   - Added URL routing for signup page
+2. Features:
+   - Form validation for username, email, and password
+   - Password strength requirements
+   - Success message after registration
+   - Automatic redirection to home page after signup
+   - Link to login page for existing users
+
+[2024-03-30] Login Page Update
+1. Updated login template:
+   - Added direct link to signup page
+   - Replaced admin contact link with signup link
+   - Maintained consistent styling with other pages
+2. Improved user experience:
+   - Clear call-to-action for new users
+   - Seamless navigation between login and signup
+   - Consistent design language across authentication pages
+
+[2024-03-30] Navigation Bar Update
+1. Simplified navigation:
+   - Removed redundant home button from navbar
+   - Logo now serves as the home link
+   - Maintained clean and intuitive navigation structure
+2. Improved UX:
+   - Reduced navigation clutter
+   - Followed common web design patterns
+   - Enhanced visual hierarchy
+
+[2024-03-30] Transaction Edit and Delete Implementation
+1. Added TransactionUpdateView and TransactionDeleteView classes
+2. Added URLs for editing and deleting transactions
+3. Created transaction_confirm_delete.html template
+4. Updated finance_calendar.html to include edit and delete buttons
+5. Features:
+   - Edit existing transactions with all fields
+   - Delete transactions with confirmation
+   - Maintain user-specific access control
+   - Preserve transaction history
+   - Consistent UI with other CRUD operations
+
+[2024-03-30] Bug Fix: Missing Transaction URLs
+1. Fixed NoReverseMatch error by adding missing URL patterns:
+   - Added path('transaction/<int:pk>/edit/', ...) for editing transactions
+   - Added path('transaction/<int:pk>/delete/', ...) for deleting transactions
+2. Calendar page now loads correctly with edit and delete functionality
+
+[2024-03-30] Calendar Layout Update
+1. Redesigned calendar to take full page width:
+   - Removed side panel with transaction list
+   - Made calendar cells larger (150px height)
+   - Added more transaction details in calendar cells
+2. Improved transaction display in calendar:
+   - Added cards for each transaction
+   - Included description and category
+   - Maintained edit/delete functionality
+   - Better visual hierarchy
+3. Enhanced overall layout:
+   - Used container-fluid for full width
+   - Centered day headers
+   - Added proper spacing and alignment
+   - Improved mobile responsiveness
+
+[2024-03-30] Currency Conversion Implementation
+1. Added currency conversion functionality:
+   - Created utils.py with currency conversion functions
+   - Added exchange rate API integration with caching
+   - Implemented currency conversion in all relevant views
+2. Updated templates to display converted amounts:
+   - Modified finance calendar to show amounts in user's preferred currency
+   - Updated spending tracker with converted amounts in charts and tables
+   - Updated home page to display all amounts in user's preferred currency
+3. Features:
+   - Real-time currency conversion using exchange rates
+   - Caching of exchange rates to reduce API calls
+   - Fallback rates if API is unavailable
+   - Consistent currency display across all pages
+   - Support for USD, EUR, and GBP currencies
+
+[2024-03-30] NLP-based Transaction Categorization Implementation
+1. Added automatic transaction categorization:
+   - Created nlp_utils.py with ML-based categorization
+   - Implemented TF-IDF vectorization and Naive Bayes classifier
+   - Added category suggestions with confidence scores
+2. Enhanced transaction form:
+   - Added real-time category suggestions as user types
+   - Implemented automatic category selection
+   - Added confidence scores for suggestions
+3. Features:
+   - Pre-trained model with common transaction categories
+   - Real-time suggestions as user types description
+   - Click-to-select suggested categories
+   - Fallback to manual category selection
+   - Support for common transaction types and keywords
+4. Categories supported:
+   - Food & Dining
+   - Transportation
+   - Shopping
+   - Entertainment
+   - Bills & Utilities
+   - Health & Fitness
+   - Travel
+   - Education
+   - Personal Care
+   - Other
+
+[2024-03-30] NLP Categorization Improvements
+1. Enhanced text preprocessing:
+   - Added NLTK for advanced text processing
+   - Implemented lemmatization to handle word variations
+   - Added tokenization for better word handling
+   - Improved text cleaning and normalization
+2. Expanded keyword database:
+   - Added more variations and related terms for each category
+   - Included common brand names and services
+   - Added multi-word phrases and combinations
+   - Improved coverage of subcategories
+3. Improved model features:
+   - Extended n-gram range to trigrams for better context
+   - Added document frequency filtering
+   - Implemented English stop words removal
+   - Adjusted classifier parameters for better accuracy
+4. Enhanced suggestion system:
+   - Added probability threshold for suggestions
+   - Improved confidence scoring
+   - Better handling of unknown terms
+   - Fallback to 'Other' category when needed
+
+[2024-03-30] NLP Implementation Simplification
+1. Removed NLTK dependencies:
+   - Removed punkt tokenizer dependency
+   - Removed WordNet lemmatizer
+   - Simplified text preprocessing
+2. Enhanced basic text processing:
+   - Improved regex-based text cleaning
+   - Better whitespace handling
+   - Maintained core categorization accuracy
+3. Benefits:
+   - More reliable operation
+   - Faster processing
+   - No external dependencies
+   - Still maintains good categorization accuracy
+
+[2024-03-30] Enhanced NLP Categorization System
+1. Implemented pattern-based categorization:
+   - Added weighted regex patterns for each category
+   - Improved pattern matching with confidence scores
+   - Better handling of compound terms and variations
+2. Enhanced category detection:
+   - Multiple pattern matching per category
+   - Weighted scoring system (0.3-1.0)
+   - Normalized scores based on match count
+   - Improved accuracy for ambiguous cases
+3. Pattern improvements:
+   - Added common brand names and services
+   - Included multi-word patterns
+   - Better handling of variations and synonyms
+   - Improved subcategory detection
+4. Benefits:
+   - More accurate categorization
+   - Better handling of complex descriptions
+   - Faster processing
+   - More reliable results
+   - No external dependencies
+
+[2024-03-21] Enhanced Transaction Categorization with Learning System
+- Implemented a learning system that improves categorization accuracy over time
+- Added ability to learn from user corrections when manually selecting categories
+- Enhanced the transaction form to show real-time category suggestions with confidence scores
+- Added visual feedback when the system learns from user selections
+- Improved the UI with clickable suggestions and better visual hierarchy
+- Implemented fuzzy matching to handle unknown words and variations
+- Added persistent storage of learned patterns in JSON format
+- Enhanced the form layout for better user experience with a two-column design
+- Added support for learning from both full descriptions and individual words
+- Implemented a scoring system that considers both exact matches and similar words
+
+[2024-03-21] Bug Fix: NoReverseMatch Error in Transaction Form
+- Fixed NoReverseMatch error in transaction form template
+- Updated URL template tag to include app namespace
+- Changed 'finance_calendar' to 'core:finance_calendar'
+- Ensures proper URL resolution for the cancel button
+- Maintains consistency with other URL references in the application
+
+[2024-03-21] Transaction Dataset Implementation
+- Created a comprehensive transaction dataset in JSON format
+- Added 20 common transaction examples with descriptions and categories
+- Included relevant keywords for each transaction type
+- Updated NLP utilities to use the dataset for training
+- Implemented dataset-based learning from user corrections
+- Enhanced categorization accuracy with real-world examples
+- Added support for automatic model retraining with new data
+- Improved keyword extraction and pattern matching
+- Maintained backward compatibility with existing categories
+- Added error handling for dataset operations
+
+[2024-03-21] Enhanced Transaction Categorization with FastText and Similar Transactions
+- Implemented FastText model for improved transaction categorization
+  - Added model training script using transaction dataset
+  - Integrated pre-trained model into NLP utilities
+  - Enhanced category suggestions with confidence scores
+- Added similar transactions feature
+  - Implemented similarity search using SequenceMatcher
+  - Added API endpoint for fetching similar transactions
+  - Updated transaction form to show similar transactions
+- Improved transaction form UI
+  - Added debouncing for API calls
+  - Enhanced category suggestion display with clickable buttons
+  - Added similar transactions display with similarity scores
+- Benefits:
+  - More accurate categorization using machine learning
+  - Better user experience with similar transaction suggestions
+  - Improved learning from user corrections
+  - Faster and more efficient categorization
+
+[2024-03-30] Homepage Update
+1. Added "Add Transaction" button to homepage:
+   - Added button in header section next to welcome message
+   - Matched styling with calendar page button
+   - Used Bootstrap icons for consistency
+   - Improved layout with flexbox alignment
+2. Enhanced user experience:
+   - Quick access to add transactions from homepage
+   - Consistent UI across pages
+   - Better visual hierarchy
+   - Maintained responsive design
+
+[2024-03-30] Transaction Form Label Update
+1. Changed image upload field label:
+   - Updated label from "Receipt Image" to "Image Reference"
+   - Improved clarity of image upload purpose
+   - Maintained consistent form styling
+   - Enhanced user understanding of image attachment functionality
+
+[2024-03-30] Calendar Navigation Update
+1. Modified calendar navigation to change months instead of years:
+   - Updated navigation arrows to increment/decrement months
+   - Added proper month transition handling (December to January and vice versa)
+   - Maintained year changes when crossing month boundaries
+   - Improved user experience with more intuitive navigation
+   - Fixed calendar display to show correct month and year
+
+[2024-03-30] Calendar Date Format Update
+1. Improved calendar header date format:
+   - Changed from numeric format (2025 - 5) to full month name format (May, 2025)
+   - Added month name using strftime('%B') for proper localization
+   - Enhanced readability and user experience
+   - Maintained consistent styling with the rest of the interface
+
+[2024-03-30] Calendar Navigation Enhancement
+1. Added "Today" button to calendar:
+   - Added button between month navigation arrows
+   - Implemented functionality to return to current month/year
+   - Used Bootstrap styling for consistent look
+   - Added proper spacing with mx-2 class
+   - Improved user experience for quick navigation to present date
+
+[2024-03-30] Calendar Hover Effect Enhancement
+1. Added hover effect with "Add Transaction" button:
+   - Implemented hover effect on calendar day cells
+   - Added "Add Transaction" button that appears on hover
+   - Button pre-fills the date when clicked
+   - Added smooth transitions for better UX
+   - Only shows on current month days
+2. Updated TransactionCreateView:
+   - Added support for pre-filled date parameter
+   - Improved date handling with error checking
+   - Enhanced user experience for quick transaction entry
+
+[2024-03-30] NLP Keywords Enhancement
+1. Updated category keywords to match dropdown categories:
+   - Expanded keywords for all categories
+   - Added more variations and related terms
+   - Improved matching accuracy
+   - Enhanced category suggestions
+2. Updated patterns in TransactionCategorizer:
+   - Aligned patterns with category keywords
+   - Improved pattern matching weights
+   - Enhanced categorization accuracy
+3. Categories covered:
+   - Food & Dining
+   - Transportation
+   - Shopping
+   - Entertainment
+   - Bills & Utilities
+   - Health & Fitness
+   - Travel
+   - Education
+   - Personal Care
+   - Other
+
+[2024-03-30] Category Name Fix
+1. Fixed category name mismatch in NLP system:
+   - Updated category keywords to match exact database names
+   - Fixed "Health & Fitness" category name
+   - Ensured consistent category names across all NLP functions
+   - Improved category matching accuracy
+2. Updated patterns in TransactionCategorizer:
+   - Aligned pattern names with database categories
+   - Enhanced pattern matching for better accuracy
+   - Added more comprehensive keywords for each category
+3. Categories now correctly match database names:
+   - Food & Dining
+   - Transportation
+   - Shopping
+   - Entertainment
+   - Bills & Utilities
+   - Health & Fitness
+   - Travel
+   - Education
+   - Personal Care
+   - Other

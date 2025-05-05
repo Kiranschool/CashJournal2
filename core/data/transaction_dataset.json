@@ -1,0 +1,377 @@
+{
+    "transactions": [
+        {
+            "description": "Starbucks Coffee",
+            "category": "Food & Dining",
+            "keywords": [
+                "coffee",
+                "starbucks",
+                "cafe",
+                "drink",
+                "beverage"
+            ]
+        },
+        {
+            "description": "Uber Ride",
+            "category": "Transportation",
+            "keywords": [
+                "uber",
+                "lyft",
+                "taxi",
+                "ride",
+                "transport"
+            ]
+        },
+        {
+            "description": "Amazon Purchase",
+            "category": "Shopping",
+            "keywords": [
+                "amazon",
+                "online",
+                "shopping",
+                "purchase",
+                "order"
+            ]
+        },
+        {
+            "description": "Netflix Subscription",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix",
+                "streaming",
+                "subscription",
+                "entertainment"
+            ]
+        },
+        {
+            "description": "Electricity Bill",
+            "category": "Bills & Utilities",
+            "keywords": [
+                "electricity",
+                "bill",
+                "utility",
+                "power",
+                "energy"
+            ]
+        },
+        {
+            "description": "Gym Membership",
+            "category": "Health & Fitness",
+            "keywords": [
+                "gym",
+                "fitness",
+                "workout",
+                "membership",
+                "exercise"
+            ]
+        },
+        {
+            "description": "Hotel Booking",
+            "category": "Travel",
+            "keywords": [
+                "hotel",
+                "booking",
+                "accommodation",
+                "travel",
+                "stay"
+            ]
+        },
+        {
+            "description": "Textbook Purchase",
+            "category": "Education",
+            "keywords": [
+                "textbook",
+                "book",
+                "education",
+                "study",
+                "course"
+            ]
+        },
+        {
+            "description": "Haircut",
+            "category": "Personal Care",
+            "keywords": [
+                "haircut",
+                "salon",
+                "beauty",
+                "grooming",
+                "personal care"
+            ]
+        },
+        {
+            "description": "Grocery Shopping",
+            "category": "Food & Dining",
+            "keywords": [
+                "grocery",
+                "supermarket",
+                "food",
+                "shopping",
+                "market"
+            ]
+        },
+        {
+            "description": "Gas Station",
+            "category": "Transportation",
+            "keywords": [
+                "gas",
+                "fuel",
+                "petrol",
+                "station",
+                "fill up"
+            ]
+        },
+        {
+            "description": "Movie Tickets",
+            "category": "Entertainment",
+            "keywords": [
+                "movie",
+                "cinema",
+                "theatre",
+                "tickets",
+                "film"
+            ]
+        },
+        {
+            "description": "Internet Bill",
+            "category": "Bills & Utilities",
+            "keywords": [
+                "internet",
+                "wifi",
+                "broadband",
+                "bill",
+                "service"
+            ]
+        },
+        {
+            "description": "Doctor Visit",
+            "category": "Health & Fitness",
+            "keywords": [
+                "doctor",
+                "medical",
+                "health",
+                "visit",
+                "appointment"
+            ]
+        },
+        {
+            "description": "Flight Tickets",
+            "category": "Travel",
+            "keywords": [
+                "flight",
+                "airline",
+                "tickets",
+                "travel",
+                "trip"
+            ]
+        },
+        {
+            "description": "Online Course",
+            "category": "Education",
+            "keywords": [
+                "course",
+                "online",
+                "education",
+                "learning",
+                "class"
+            ]
+        },
+        {
+            "description": "Spa Treatment",
+            "category": "Personal Care",
+            "keywords": [
+                "spa",
+                "treatment",
+                "massage",
+                "wellness",
+                "relaxation"
+            ]
+        },
+        {
+            "description": "Restaurant Dinner",
+            "category": "Food & Dining",
+            "keywords": [
+                "restaurant",
+                "dinner",
+                "meal",
+                "dining",
+                "food"
+            ]
+        },
+        {
+            "description": "Bus Fare",
+            "category": "Transportation",
+            "keywords": [
+                "bus",
+                "fare",
+                "transport",
+                "public",
+                "transit"
+            ]
+        },
+        {
+            "description": "Clothing Store",
+            "category": "Shopping",
+            "keywords": [
+                "clothing",
+                "clothes",
+                "fashion",
+                "apparel",
+                "store"
+            ]
+        },
+        {
+            "description": "Nandos",
+            "category": "Food & Dining",
+            "keywords": [
+                "nandos"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Restaurant bill",
+            "category": "Food & Dining",
+            "keywords": [
+                "restaurant",
+                "bill"
+            ]
+        },
+        {
+            "description": "burger king",
+            "category": "Food & Dining",
+            "keywords": [
+                "burger",
+                "king"
+            ]
+        },
+        {
+            "description": "gym",
+            "category": "Education",
+            "keywords": [
+                "gym"
+            ]
+        },
+        {
+            "description": "spa",
+            "category": "Personal Care",
+            "keywords": [
+                "spa"
+            ]
+        },
+        {
+            "description": "burger king",
+            "category": "Food & Dining",
+            "keywords": [
+                "burger",
+                "king"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "gym",
+            "category": "Health & Fitness",
+            "keywords": [
+                "gym"
+            ]
+        },
+        {
+            "description": "iPad",
+            "category": "Shopping",
+            "keywords": [
+                "ipad"
+            ]
+        },
+        {
+            "description": "wage",
+            "category": "Other",
+            "keywords": [
+                "wage"
+            ]
+        },
+        {
+            "description": "stock returns",
+            "category": "Other",
+            "keywords": [
+                "stock",
+                "returns"
+            ]
+        },
+        {
+            "description": "netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Tesco meal deal",
+            "category": "Food & Dining",
+            "keywords": [
+                "tesco",
+                "meal",
+                "deal"
+            ]
+        },
+        {
+            "description": "burger king",
+            "category": "Food & Dining",
+            "keywords": [
+                "burger",
+                "king"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        },
+        {
+            "description": "Netflix",
+            "category": "Entertainment",
+            "keywords": [
+                "netflix"
+            ]
+        }
+    ]
+}

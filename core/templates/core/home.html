@@ -1,0 +1,126 @@
+{% extends "core/base.html" %}
+
+{% block title %}Home - Cash Journal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Welcome, {{ user.username }}!</h2>
+                <p class="text-muted">Here's your financial overview for {{ month }}.</p>
+            </div>
+            <a href="{% url 'core:transaction_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus"></i> Add Transaction
+            </a>
+        </div>
+    </div>
+
+    <!-- Monthly Summary -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Income</h5>
+                    <h3 class="card-text">{{ monthly_summary.income|floatformat:2 }} {{ monthly_summary.currency }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Expenses</h5>
+                    <h3 class="card-text">{{ monthly_summary.expenses|floatformat:2 }} {{ monthly_summary.currency }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card {% if monthly_summary.balance >= 0 %}bg-primary{% else %}bg-warning{% endif %} text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Balance</h5>
+                    <h3 class="card-text">{{ monthly_summary.balance|floatformat:2 }} {{ monthly_summary.currency }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Spending by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover purple-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Purchase Name</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td>{{ transaction.date|date:"M d" }}</td>
+                                    <td>{{ transaction.purchase_name }}</td>
+                                    <td class="{% if transaction.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ transaction.amount|floatformat:2 }} {{ monthly_summary.currency }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = {
+        labels: [{% for category in category_breakdown %}'{{ category.category__name }}',{% endfor %}],
+        datasets: [{
+            data: [{% for category in category_breakdown %}{{ category.total }},{% endfor %}],
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF',
+                '#FF9F40'
+            ]
+        }]
+    };
+    new Chart(categoryCtx, {
+        type: 'pie',
+        data: categoryData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

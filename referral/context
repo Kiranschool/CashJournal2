@@ -1,0 +1,59 @@
+This is my techstack and details about my project, I want every response for you to answer back with "yes sir" before making any changes. I also want you to put the steps of your progress making this project in logging.txt file. Always analyse the existing codebase before making any changes.
+
+# 💸 Cash Journal – AI-Driven Personal Finance Diary
+
+A personal finance diary and budgeting web app designed to help users become more conscious of their spending habits, reduce impulsive purchases, and gain insights through AI-powered categorization and forecasting.
+
+---
+
+## ✅ Core Functionalities
+
+### 👤 User Authentication
+- Sign up and log in using Django’s built-in auth system
+
+### 🏠 Homepage
+- Dashboard-style entry point to navigate the app
+
+### 📅 Finance Calendar / Journal
+- Log purchases by date
+- Attach notes, reflections, or receipts to transactions
+
+### 🎯 Wishlist Page
+- Add items to a wishlist
+- Helps delay impulse spending and track future wants
+
+### 📊 Spending Tracker
+- Categorize and view spending
+- Filter by category, date, or amount
+
+### ⚙️ Account & Settings
+- Manage user preferences and personal data
+
+### 🧠 AI Features
+
+#### 📌 NLP Categorization
+- Automatically categorize transactions based on their description using an NLP model
+- Example: `"Uber trip"` → `Transport`
+
+#### 📈 Spending Forecast (Regression)
+- Predict upcoming monthly or weekly expenses based on historical data
+- Example: "Based on your last 3 months, you’re likely to spend £450 in April."
+
+---
+
+## 🧱 Tech Stack
+
+| Layer        | Technology                      | Purpose                                        |
+|--------------|----------------------------------|------------------------------------------------|
+| **Frontend** | HTML, CSS, JavaScript           | Static pages for UI and interactions           |
+| **Backend**  | Django (Python)                 | Core logic, API endpoints, and auth            |
+| **Database** | PostgreSQL (Heroku Add-on)      | Stores transactions, users, wishlist, etc.     |
+| **ML/NLP**   | Scikit-learn, Pandas (Python)   | Categorization + Regression forecasting        |
+| **Auth**     | Django built-in authentication  | Handles login, registration, sessions          |
+| **Styling**  | Vanilla CSS                     | Simple responsive layout                       |
+| **Deployment** | **Heroku**                    | Hosts backend + static frontend (via Django)   |
+
+---
+
+## 🗂️ Folder Structure (Simplified)
+
