@@ -67,6 +67,7 @@ class HomeView(LoginRequiredMixin, ListView):
             'balance': monthly_income - monthly_expenses,
             'currency': user_currency
         }
+        context['month'] = today.strftime('%B %Y')
 
         # Get category breakdown
         category_spending = Transaction.objects.filter(
