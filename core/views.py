@@ -97,7 +97,11 @@ class FinanceCalendarView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_currency = self.request.user.userpreferences.default_currency
+        
+        # Ensure user preferences exist
+        user_preferences, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        user_currency = user_preferences.default_currency
+        
         year = int(self.request.GET.get('year', timezone.now().year))
         month = int(self.request.GET.get('month', timezone.now().month))
         
@@ -237,7 +241,10 @@ class WishlistView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = WishlistItem.objects.filter(user=self.request.user).order_by('priority')
-        user_currency = self.request.user.userpreferences.default_currency
+        
+        # Ensure user preferences exist
+        user_preferences, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        user_currency = user_preferences.default_currency
         
         # Convert estimated costs to user's preferred currency
         for item in queryset:
@@ -250,7 +257,10 @@ class WishlistView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['currency'] = self.request.user.userpreferences.default_currency
+        
+        # Ensure user preferences exist
+        user_preferences, created = UserPreferences.objects.get_or_create(user=self.request.user)
+        context['currency'] = user_preferences.default_currency
         return context
 
 class WishlistItemCreateView(LoginRequiredMixin, CreateView):
