@@ -81,7 +81,16 @@ WSGI_APPLICATION = 'cashjournal.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL', 'postgres://postgres:password@localhost:5432/cashjournal_db'),
-        conn_max_age=600
+        conn_max_age=0,  # Disable persistent connections
+        options={
+            'connect_timeout': 30,  # Increase timeout
+            'keepalives': 1,
+            'keepalives_idle': 30,
+            'keepalives_interval': 10,
+            'keepalives_count': 5,
+            'tcp_user_timeout': 30000,  # Add TCP timeout
+            'application_name': 'cashjournal'  # Add application name for better tracking
+        }
     )
 }
 
